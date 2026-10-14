@@ -1,0 +1,6 @@
+path: /data/HJ_thyroid/datasets
+train: splits/pooled_5fold/fold2/train.txt
+val: splits/pooled_5fold/fold2/val.txt
+test: splits/heldout_test/tn3k_test.txt
+names:
+  0: nodule

@@ -1,0 +1,6 @@
+path: /data/HJ_thyroid/datasets
+train: splits/lodo/ddti2tn3k/train.txt
+val: splits/lodo/ddti2tn3k/val.txt
+test: splits/lodo/ddti2tn3k/val.txt
+names:
+  0: nodule
