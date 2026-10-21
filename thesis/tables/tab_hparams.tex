@@ -1,0 +1,20 @@
+% 자동 생성 파일 — scripts/make_thesis.py 가 덮어쓴다. 직접 고치지 말 것.
+\begin{table}[htbp]
+\centering
+\small
+\caption[학습 설정.]{학습 설정. 베이스라인과 제안 모델은 경계 손실 계수를 제외한 모든 값이 같다(생성 시 두 모델의 \texttt{args.yaml}이 일치하는지 자동 확인함).}
+\label{tab:hparams}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lp{0.74\linewidth}}
+\toprule
+구분 & 설정값 \\
+\midrule
+최적화 & \parbox[t]{0.72\linewidth}{\raggedright \texttt{epochs}=100, \texttt{patience}=20, \texttt{batch}=32, \texttt{imgsz}=640, \texttt{optimizer}=auto, \texttt{lr0}=0.01, \texttt{lrf}=0.01, \texttt{momentum}=0.937, \texttt{weight\_decay}=0.0005, \texttt{warmup\_epochs}=3.0, \texttt{cos\_lr}=False, \texttt{amp}=True} \\
+손실 가중치 & \parbox[t]{0.72\linewidth}{\raggedright \texttt{box}=7.5, \texttt{cls}=0.5, \texttt{dfl}=1.5, \texttt{overlap\_mask}=True, \texttt{mask\_ratio}=4} \\
+데이터 증강 & \parbox[t]{0.72\linewidth}{\raggedright \texttt{hsv\_h}=0.015, \texttt{hsv\_s}=0.7, \texttt{hsv\_v}=0.4, \texttt{degrees}=0.0, \texttt{translate}=0.1, \texttt{scale}=0.5, \texttt{shear}=0.0, \texttt{perspective}=0.0, \texttt{flipud}=0.0, \texttt{fliplr}=0.5, \texttt{mosaic}=1.0, \texttt{close\_mosaic}=10, \texttt{mixup}=0.0, \texttt{copy\_paste}=0.0} \\
+재현성 & \parbox[t]{0.72\linewidth}{\raggedright \texttt{seed}=42, \texttt{deterministic}=True} \\
+경계 손실 (제안) & \texttt{head\_gain}=1.0, $\lambda$=2.0 (\ref{sec:sweep}절 스윕으로 결정) \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

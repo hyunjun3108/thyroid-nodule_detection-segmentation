@@ -1,0 +1,20 @@
+% 자동 생성 파일 — scripts/make_thesis.py 가 덮어쓴다. 직접 고치지 말 것.
+\begin{table*}[htbp]
+\centering
+\footnotesize
+\caption[단계별 누적 결과 (held-out TN3K test, 5-fold 평균).]{단계별 누적 결과 (held-out TN3K test, 5-fold 평균). PyTorch 모델의 지연 시간은 배포 형식과 측정 조건이 달라 비교에서 제외했다.}
+\label{tab:final}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lccccccc}
+\toprule
+모델 & Mask mAP$_{50:95}$ & Dice & HD95 (\%) & BIoU & 크기 (MB) & CPU (ms) & GPU (ms) \\
+\midrule
+베이스라인 nano & 0.6272 & 0.8195 & 9.628 & 0.4358 & 6.00 & -- & -- \\
++ 경계 정교화 & 0.6267 & 0.8300 & 8.378 & 0.4414 & 6.01 & -- & -- \\
++ ONNX FP16 & 0.6194 & 0.8301 & 8.516 & 0.4403 & 5.87 & -- & 3.13 \\
++ ONNX Runtime INT8 & 0.6032 & 0.8184 & 9.395 & 0.4299 & 5.45 & 44.00 & -- \\
+\textbf{+ OpenVINO INT8 (최종)} & \textbf{0.6161} & \textbf{0.8290} & \textbf{8.497} & \textbf{0.4379} & \textbf{3.71} & \textbf{4.10} & \textbf{--} \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}

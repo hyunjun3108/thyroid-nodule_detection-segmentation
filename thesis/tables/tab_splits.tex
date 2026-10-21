@@ -1,0 +1,23 @@
+% 자동 생성 파일 — scripts/make_thesis.py 가 덮어쓴다. 직접 고치지 말 것.
+\begin{table}[htbp]
+\centering
+\small
+\caption[데이터 분할 구성.]{데이터 분할 구성. 괄호 안은 TN3K / DDTI 영상 수이다. pooled 5-fold의 평가는 모두 학습에 쓰이지 않은 TN3K test 614장에서 수행하였다.}
+\label{tab:splits}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lrrrrr}
+\toprule
+분할 & 학습 & (TN3K / DDTI) & 검증 & (TN3K / DDTI) & 평가 \\
+\midrule
+fold 0 & 2,812 & 2,303 / 509 & 704 & 576 / 128 & 614 \\
+fold 1 & 2,812 & 2,303 / 509 & 704 & 576 / 128 & 614 \\
+fold 2 & 2,813 & 2,303 / 510 & 703 & 576 / 127 & 614 \\
+fold 3 & 2,813 & 2,303 / 510 & 703 & 576 / 127 & 614 \\
+fold 4 & 2,814 & 2,304 / 510 & 702 & 575 / 127 & 614 \\
+\midrule
+LODO TN3K$\rightarrow$DDTI & 3,493 & 3,493 / 0 & 637 & 0 / 637 & (= 검증, DDTI) \\
+LODO DDTI$\rightarrow$TN3K & 637 & 0 / 637 & 3,493 & 3,493 / 0 & (= 검증, TN3K) \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

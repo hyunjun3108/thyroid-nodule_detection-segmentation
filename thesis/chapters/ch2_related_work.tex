@@ -1,0 +1,133 @@
+% ============================================================================
+\chapter{관련 연구}\label{ch:related}
+% ============================================================================
+
+이 장에서는 본 연구와 관련된 다섯 갈래의 선행연구를 정리한다. 의료영상 분할의 기본 구조
+(\secref{sec:rw_medseg}), 갑상선 결절 분할 연구와 공개 데이터셋(\secref{sec:rw_thyroid}),
+실시간 인스턴스 분할(\secref{sec:rw_realtime}), 경계 정교화(\secref{sec:rw_boundary}),
+모델 경량화와 양자화(\secref{sec:rw_quant})를 차례로 살펴보고, 평가 지표와 도메인 이동에 관한
+논의(\secref{sec:rw_metric}, \secref{sec:rw_domain})를 거쳐 연구 공백을 도출한다(\secref{sec:rw_gap}).
+
+\section{의료영상 분할}\label{sec:rw_medseg}
+
+U-Net\citep{ronneberger2015unet}은 대칭적인 인코더--디코더와 같은 해상도끼리 특징을 잇는 스킵 연결로
+적은 학습 데이터에서도 정밀한 분할을 가능하게 하여 의료영상 분할의 표준 구조가 되었다.
+이후 중첩된 스킵 연결을 둔 UNet++\citep{zhou2018unetpp}, 데이터셋 특성에 맞춰 전처리와 구조를
+자동으로 구성하는 nnU-Net\citep{isensee2021nnunet} 등이 제안되었으며, 영역 겹침을 직접 최적화하는
+Dice 손실\citep{milletari2016vnet}도 널리 쓰인다.
+
+이들은 영상 전체를 픽셀 단위로 분류하는 의미 분할(semantic segmentation) 모델이다. 한 영상에
+결절이 여러 개 있을 때 각각을 구분하려면 별도의 후처리가 필요하고, 결절의 위치를 상자로
+제시하는 검출 기능은 기본적으로 포함하지 않는다. 검출과 분할을 함께 수행하는 인스턴스 분할로는
+Mask R-CNN\citep{he2017maskrcnn}이 대표적이지만, 2단계 구조여서 추론 비용이 크다.
+
+\section{갑상선 결절 분할}\label{sec:rw_thyroid}
+
+갑상선 결절 분할 연구는 공개 데이터셋의 등장과 함께 활발해졌다. DDTI\citep{pedraza2015ddti}는
+콜롬비아의 영상센터에서 수집한 갑상선 초음파 영상과 판독 정보를 공개한 초기 데이터셋이다.
+TN3K\citep{gong2021multitask}는 3,493장 규모의 갑상선 결절 분할 데이터셋으로, 이를 공개한 연구는
+갑상선 영역 분할을 보조 과제로 두어 결절이 갑상선 안에 있다는 사전지식을 활용하는 다중 과제
+학습을 제안하였다. 후속 연구인 TRFE-Net\citep{gong2023trfe}은 갑상선 영역 사전정보를 주의 기전으로
+결절 분할에 주입하여 성능을 높였다.
+
+이 연구들은 분할 정확도 향상에 초점을 두며, 모델의 경량화나 CPU 배포는 주된 관심사가 아니다.
+또한 대부분 단일 데이터셋 안에서 학습과 평가를 수행하여, 서로 다른 데이터셋 사이의 일반화는
+충분히 다뤄지지 않았다.
+
+\section{실시간 인스턴스 분할}\label{sec:rw_realtime}
+
+YOLO\citep{redmon2016yolo}는 검출을 단일 회귀 문제로 바꾸어 실시간 검출을 가능하게 하였다.
+인스턴스 분할을 실시간으로 수행하는 방법으로는 YOLACT\citep{bolya2019yolact}가 중요한 전환점이다.
+YOLACT는 영상 전체에 공유되는 소수의 프로토타입 마스크와, 검출된 객체마다 예측하는 마스크 계수를
+분리하고, 둘의 선형 결합으로 객체별 마스크를 만든다. 마스크 생성이 행렬 곱 한 번으로 끝나므로
+2단계 방식보다 훨씬 빠르다.
+
+Ultralytics YOLOv8과 YOLOv11\citep{jocher2024yolo11}의 분할 모델은 이 프로토타입 방식을 따른다.
+YOLOv11은 CSP 구조\citep{wang2020cspnet}를 경량화한 C3k2 블록, SPPF, 공간 주의 블록인 C2PSA를
+백본에 두고, FPN\citep{lin2017fpn}·PAN\citep{liu2018panet} 형태의 넥에서 세 스케일의 특징을 융합한다.
+검출 헤드는 앵커 없는(anchor-free) 방식으로 상자를 분포 형태로 회귀하는 DFL\citep{li2020gfl}과
+과제 정렬 할당기\citep{feng2021tood}를 사용한다.
+
+프로토타입 방식의 약점은 마스크 해상도이다. 프로토타입은 입력의 1/4 해상도에서 만들어지므로,
+세밀한 경계를 표현하는 데 한계가 있고 경계가 거칠어지기 쉽다. 본 연구는 바로 이 지점을 개선
+대상으로 삼는다.
+
+\section{경계 정교화}\label{sec:rw_boundary}
+
+분할 경계를 개선하는 방법은 크게 두 부류로 나뉜다.
+
+\paragraph{추론 단계의 정교화.} PointRend\citep{kirillov2020pointrend}는 분할을 렌더링 문제로 보고,
+불확실성이 높은 경계 부근의 점만 골라 고해상도 특징으로 반복 재분류한다. 경계 품질을 크게 높이지만,
+추론 시 추가 모듈과 반복 연산이 필요하여 지연 시간이 늘어난다.
+
+\paragraph{학습 단계의 경계 감독.} 손실 함수를 바꾸어 경계에 학습 신호를 집중시키는 방법이다.
+Boundary loss\citep{kervadec2019boundary}는 정답 경계로부터의 거리 맵을 이용해 영역 적분 형태의
+경계 손실을 정의하여 클래스 불균형이 심한 분할에서 효과를 보였다. Karimi와 Salcudean\citep{karimi2020hausdorff}은
+Hausdorff 거리를 직접 줄이는 미분 가능한 손실을 제안하였다. 이 방법들은 추론 비용을 늘리지 않는다는
+장점이 있으나, 대부분 픽셀 단위 의미 분할을 전제로 설계되어 프로토타입 기반 인스턴스 분할의
+객체별 마스크 손실에 그대로 적용하기 어렵다.
+
+본 연구는 두 번째 부류에 속하면서, 보조 경계 분기를 두어 공유 프로토타입 자체가 경계에 민감해지도록
+학습시키되 그 분기를 추론 그래프에서는 완전히 제거하는 방식을 택한다.
+
+\section{모델 경량화와 양자화}\label{sec:rw_quant}
+
+모델 경량화 기법에는 가지치기, 지식 증류\citep{hinton2015distilling}, 경량 구조 설계, 양자화가 있으며
+이들을 결합하기도 한다\citep{han2016deepcompression}. 이 가운데 양자화는 가중치와 활성값을 32비트
+부동소수점에서 8비트 정수 등으로 낮추어 모델 크기와 연산량을 줄인다. Jacob 등\citep{jacob2018quantization}은
+정수 연산만으로 추론하는 양자화 체계를 정립하였고, Krishnamoorthi\citep{krishnamoorthi2018whitepaper}와
+Nagel 등\citep{nagel2021whitepaper}은 채널별 양자화, 캘리브레이션, 양자화 인식 학습 등 실무 지침을 정리하였다.
+
+양자화는 재학습 없이 소량의 캘리브레이션 데이터로 변환하는 사후 양자화(PTQ)와 학습 중에 양자화
+오차를 반영하는 양자화 인식 학습(QAT)으로 나뉜다. PTQ는 간편하지만 양자화에 민감한 연산이 있으면
+정확도가 크게 떨어질 수 있어, 어떤 연산을 부동소수점으로 남길지가 결과를 좌우한다.
+OpenVINO의 NNCF\citep{kozlov2020nncf}는 구조를 분석하여 민감한 연산을 양자화 범위에서 제외하는
+기능을 제공한다.
+
+\section{분할 평가 지표}\label{sec:rw_metric}
+
+Dice 계수와 IoU는 영역 겹침을 재는 가장 일반적인 지표이다. 그러나 이들은 면적 전체에 대한 비율이므로
+큰 객체에서 경계 부근 오차의 영향이 희석된다\citep{taha2015metrics}. Hausdorff 거리는 두 경계 사이의 최대
+거리로 경계의 최악 오차를 직접 반영하며, 이상치에 대한 민감도를 낮추기 위해 95 백분위값(HD95)이 흔히
+쓰인다. Boundary IoU\citep{cheng2021boundaryiou}는 두 마스크의 경계로부터 일정 폭 안의 띠 영역에서만 IoU를
+계산하여, 객체 크기와 무관하게 경계 품질에 민감한 지표를 제공한다.
+
+\section{의료영상의 도메인 이동}\label{sec:rw_domain}
+
+의료영상 모델은 학습 데이터와 장비, 촬영 프로토콜, 환자군이 다른 데이터에서 성능이 떨어지는 경우가
+많다\citep{guan2022domain}. 이를 완화하기 위해 도메인 적대 학습\citep{ganin2015dann} 등 도메인 적응 기법이
+연구되고 있다. 한편 이러한 일반화 성능을 평가할 때는 실행 간 변동을 고려해야 한다. 같은 설정이라도
+난수 시드에 따라 결과가 상당히 달라질 수 있어, 단일 실행으로 기법 간 우열을 판단하면 잘못된 결론에
+이를 수 있다\citep{bouthillier2021variance}.
+
+\section{연구 공백}\label{sec:rw_gap}
+
+\tabref{tab:related}는 선행연구를 본 연구의 관점에서 요약한 것이다.
+
+\begin{table}[htbp]
+\centering\small
+\caption{선행연구 요약과 본 연구의 위치.}
+\label{tab:related}
+\begin{tabular}{p{0.2\linewidth}p{0.33\linewidth}p{0.38\linewidth}}
+\toprule
+계열 & 대표 연구 & 본 연구와의 관계 \\
+\midrule
+의료영상 분할 & U-Net\citep{ronneberger2015unet}, UNet++\citep{zhou2018unetpp}, nnU-Net\citep{isensee2021nnunet}
+  & 정확도는 높으나 검출·분할 통합과 추론 비용은 주된 관심이 아님 \\
+갑상선 결절 분할 & TN3K\citep{gong2021multitask}, TRFE-Net\citep{gong2023trfe}, DDTI\citep{pedraza2015ddti}
+  & 갑상선 영역 사전정보 활용. 경량화·교차 데이터셋 평가는 범위 밖 \\
+실시간 인스턴스 분할 & YOLACT\citep{bolya2019yolact}, YOLOv11-seg\citep{jocher2024yolo11}
+  & 빠르지만 1/4 해상도 프로토타입으로 경계가 거침 \\
+경계 정교화 & PointRend\citep{kirillov2020pointrend}, Boundary loss\citep{kervadec2019boundary}, HD loss\citep{karimi2020hausdorff}
+  & 추론 비용이 늘거나 의미 분할을 전제로 함 \\
+양자화 & Jacob 등\citep{jacob2018quantization}, NNCF\citep{kozlov2020nncf}
+  & 일반 기법. 분할 경계 품질에 미치는 영향은 별도 검증 필요 \\
+평가 지표 & Boundary IoU\citep{cheng2021boundaryiou}, HD95\citep{taha2015metrics}
+  & 본 연구의 주 평가 지표로 채택 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+정리하면, 갑상선 초음파 인스턴스 분할에서 \textbf{추론 비용을 늘리지 않는 경계 정교화}와
+\textbf{CPU 배포를 위한 양자화}를 하나의 파이프라인에서 함께 검증하고, 그 효과를 경계 특화 지표와
+통계 검정, 교차 데이터셋 실험으로 평가한 연구는 드물다. 본 연구는 이 공백을 다룬다.

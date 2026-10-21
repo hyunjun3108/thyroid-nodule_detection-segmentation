@@ -1,0 +1,24 @@
+% 자동 생성 파일 — scripts/make_thesis.py 가 덮어쓴다. 직접 고치지 말 것.
+\begin{table}[htbp]
+\centering
+\footnotesize
+\caption[fold별 상세 결과 (held-out TN3K test).]{fold별 상세 결과 (held-out TN3K test). 기준 = 베이스라인 nano, 제안 = BRM nano.}
+\label{tab:perfold}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lcccccccc}
+\toprule
+\multirow{2}{*}{fold} & \multicolumn{2}{c}{Mask mAP$_{50:95}$} & \multicolumn{2}{c}{Dice} & \multicolumn{2}{c}{HD95 (\%)} & \multicolumn{2}{c}{BIoU} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+ & 기준 & 제안 & 기준 & 제안 & 기준 & 제안 & 기준 & 제안 \\
+\midrule
+fold 0 & 0.6215 & 0.6271 & 0.8095 & 0.8344 & 10.656 & 7.034 & 0.4265 & 0.4374 \\
+fold 1 & 0.6256 & 0.6186 & 0.8206 & 0.8309 & 9.447 & 8.829 & 0.4320 & 0.4422 \\
+fold 2 & 0.6398 & 0.6266 & 0.8170 & 0.8301 & 11.015 & 8.429 & 0.4448 & 0.4381 \\
+fold 3 & 0.6219 & 0.6215 & 0.8221 & 0.8237 & 8.578 & 8.932 & 0.4351 & 0.4395 \\
+fold 4 & 0.6272 & 0.6398 & 0.8284 & 0.8306 & 8.444 & 8.669 & 0.4408 & 0.4496 \\
+\midrule
+평균 & 0.6272 & 0.6267 & 0.8195 & 0.8300 & 9.628 & 8.378 & 0.4358 & 0.4414 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

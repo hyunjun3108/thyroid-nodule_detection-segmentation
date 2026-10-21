@@ -1,0 +1,23 @@
+% 자동 생성 파일 — scripts/make_thesis.py 가 덮어쓴다. 직접 고치지 말 것.
+\begin{table*}[htbp]
+\centering
+\footnotesize
+\caption[경계 정교화 효과의 대응표본 검정 (held-out TN3K test).]{경계 정교화 효과의 대응표본 검정 (held-out TN3K test). 영상 단위 분석은 각 영상에 대해 5개 fold 모델의 예측 지표를 평균한 뒤 비교한다. 95\% 신뢰구간은 대응 차이의 부트스트랩(10,000회) 백분위 구간이며, $d_z$는 대응표본 효과크기로 양수가 제안 모델의 우세를 뜻한다. n=5에서 양측 Wilcoxon 검정이 도달할 수 있는 최소 $p$는 0.0625이다. 대응 $t$ 검정의 $p$는 영상 단위 0.0007, 0.0202, 0.0002, fold 단위 0.071, 0.165, 0.190(Dice, Boundary IoU, HD95 순)로 결론이 같다.}
+\label{tab:stats}
+\setlength{\tabcolsep}{4pt}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{llccccc}
+\toprule
+분석 단위 & 지표 & $\Delta$ & 95\% CI & Wilcoxon $p$ & $d_z$ & 개선 비율 (\%) \\
+\midrule
+\multirow{3}{*}{영상 단위 (n=614)} & Dice & +0.0104 & [+0.0044, +0.0166] & $0.014$ (*) & 0.14 & 52.8 \\
+ & Boundary IoU & +0.0055 & [+0.0009, +0.0102] & $0.011$ (*) & 0.09 & 53.6 \\
+ & HD95 (\%) & -1.2495 & [-1.8945, -0.5918] & $0.0045$ (**) & 0.15 & 53.4 \\
+\midrule
+\multirow{3}{*}{fold 단위 (n=5)} & Dice & +0.0104 & -- & $0.062$ (n.s.) & 1.09 & 100.0 \\
+ & Boundary IoU & +0.0055 & -- & $0.188$ (n.s.) & 0.76 & 80.0 \\
+ & HD95 (\%) & -1.2495 & -- & $0.312$ (n.s.) & 0.71 & 60.0 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}

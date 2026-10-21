@@ -1,0 +1,27 @@
+% 자동 생성 파일 — scripts/make_thesis.py 가 덮어쓴다. 직접 고치지 말 것.
+\begin{table}[htbp]
+\centering
+\small
+\caption[사용한 두 공개 데이터셋의 통계.]{사용한 두 공개 데이터셋의 통계. 결절 면적은 정답 폴리곤 면적을 영상 면적으로 나눈 값이다.}
+\label{tab:dataset_stats}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lrrr}
+\toprule
+항목 & TN3K (trainval) & TN3K (test) & DDTI \\
+\midrule
+영상 수 & 2,879 & 614 & 637 \\
+결절 수 & 3,130 & 690 & 637 \\
+영상당 평균 결절 수 & 1.09 & 1.12 & 1.00 \\
+결절 2개 이상 영상 비율 (\%) & 7.8 & 11.4 & 0.0 \\
+파일 형식 & JPG & JPG & PNG \\
+너비 범위 (px) & 184--1463 & 255--1399 & 245--560 \\
+높이 범위 (px) & 174--826 & 261--772 & 360--360 \\
+해상도 중앙값 (px) & 390$\times$336 & 436$\times$375 & 280$\times$360 \\
+고유 해상도 종류 수 & 2,443 & 555 & 4 \\
+결절 면적 중앙값 (영상 대비 \%) & 7.16 & 5.31 & 7.46 \\
+결절 면적 5--95 백분위 (\%) & 0.88--42.95 & 0.59--37.33 & 1.52--23.76 \\
+결절 면적 최솟값 (\%) & 0.056 & 0.162 & 0.524 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

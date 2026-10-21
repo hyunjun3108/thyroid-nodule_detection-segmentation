@@ -1,0 +1,98 @@
+% ============================================================================
+% 서식 설정 — main.tex 에서 \input 한다.
+% ============================================================================
+\usepackage{iftex}
+\ifXeTeX\else\ifLuaTeX\else
+  \errmessage{이 문서는 한글 조판 때문에 XeLaTeX(권장) 또는 LuaLaTeX로 컴파일해야 합니다.}
+\fi\fi
+
+% ── 한글 ────────────────────────────────────────────────────────────────
+\usepackage{kotex}
+\usepackage{fontspec}
+% 설치된 글꼴을 순서대로 찾는다: Noto CJK(Overleaf·대부분 리눅스) → 나눔 → 은(TeX Live 기본)
+\IfFontExistsTF{Noto Serif CJK KR}{\setmainhangulfont{Noto Serif CJK KR}[AutoFakeSlant=0.15]}{%
+  \IfFontExistsTF{NanumMyeongjo}{\setmainhangulfont{NanumMyeongjo}[AutoFakeSlant=0.15]}{\setmainhangulfont{UnBatang}[AutoFakeSlant=0.15]}}
+\IfFontExistsTF{Noto Sans CJK KR}{\setsanshangulfont{Noto Sans CJK KR}}{%
+  \IfFontExistsTF{NanumGothic}{\setsanshangulfont{NanumGothic}}{\setsanshangulfont{UnDotum}}}
+\IfFontExistsTF{Noto Sans Mono CJK KR}{\setmonohangulfont{Noto Sans Mono CJK KR}}{%
+  \IfFontExistsTF{NanumGothicCoding}{\setmonohangulfont{NanumGothicCoding}}{\setmonohangulfont{UnDotum}}}
+
+% ── 쪽 ──────────────────────────────────────────────────────────────────
+\usepackage[a4paper,top=30mm,bottom=30mm,left=30mm,right=25mm,headheight=14pt]{geometry}
+\usepackage{setspace}
+\setstretch{1.55}
+\setlength{\parindent}{1em}
+\setlength{\parskip}{0.25em}
+\usepackage{fancyhdr}
+\pagestyle{plain}
+
+% ── 수식·표·그림 ────────────────────────────────────────────────────────
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs,multirow,array}
+\usepackage{adjustbox}
+\usepackage{float}
+\usepackage[labelsep=period,font=small,labelfont=bf,skip=6pt]{caption}
+\usepackage{subcaption}
+\usepackage[section]{placeins}   % 절 경계를 넘어 그림·표가 떠다니지 않게
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{enumitem}
+\setlist{itemsep=0.15em,topsep=0.4em,leftmargin=1.6em}
+\usepackage{xcolor}
+\usepackage{url}
+
+% ── 참고문헌·링크 ──────────────────────────────────────────────────────
+\usepackage[numbers,sort&compress]{natbib}
+\setlength{\bibsep}{0.3em}
+\usepackage[unicode,hidelinks,bookmarksnumbered]{hyperref}
+
+% ── 장·절 제목 ─────────────────────────────────────────────────────────
+\usepackage{titlesec}
+\titleformat{\chapter}[display]{\centering\bfseries}{\Large 제\,\thechapter\,장}{0.5em}{\LARGE}
+\titlespacing*{\chapter}{0pt}{0pt}{2.2em}
+\titleformat{\section}{\bfseries\large}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\bfseries\normalsize}{\thesubsection}{0.8em}{}
+\titlespacing*{\section}{0pt}{1.4em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1.0em}{0.4em}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+% ── 한국어 명칭 (kotex 가 문서 시작 때 덮어쓰지 않도록 \AtBeginDocument 에서 설정) ──
+\AtBeginDocument{%
+  \renewcommand{\contentsname}{목\quad 차}%
+  \renewcommand{\listfigurename}{그림 목차}%
+  \renewcommand{\listtablename}{표 목차}%
+  \renewcommand{\bibname}{참고문헌}%
+  \renewcommand{\figurename}{그림}%
+  \renewcommand{\tablename}{표}%
+  \renewcommand{\appendixname}{부록}%
+}
+\floatname{algorithm}{알고리즘}
+\algrenewcommand\algorithmicrequire{\textbf{입력:}}
+\algrenewcommand\algorithmicensure{\textbf{출력:}}
+% 부록 장 제목은 '부록 A'
+\usepackage{etoolbox}
+\apptocmd{\appendix}{%
+  \titleformat{\chapter}[display]{\centering\bfseries}{\Large 부록\,\thechapter}{0.5em}{\LARGE}}{}{}
+
+% ── 본문용 매크로 ──────────────────────────────────────────────────────
+\newcommand{\fillin}[1]{\textcolor{red}{#1}}            % 저자가 채울 자리 (최종본에서 빨간색 확인)
+\newcommand{\TODO}[1]{\textcolor{red}{[확인 필요: #1]}}  % 저자가 확인해야 할 서술
+\DeclareRobustCommand{\figref}[1]{그림~\ref{#1}}
+\DeclareRobustCommand{\tabref}[1]{표~\ref{#1}}
+\DeclareRobustCommand{\secref}[1]{\ref{#1}절}
+\DeclareRobustCommand{\chapref}[1]{제\ref{#1}장}
+\DeclareRobustCommand{\eqnref}[1]{식~(\ref{#1})}
+\DeclareRobustCommand{\algref}[1]{알고리즘~\ref{#1}}
+\DeclareRobustCommand{\appref}[1]{부록~\ref{#1}}
+\newcommand{\BRM}{SegmentBRM}
+\newcommand{\mAP}{mAP$_{50:95}$}
+\newcommand{\tn}{TN3K}
+\newcommand{\dd}{DDTI}
+\newcommand{\todir}{$\rightarrow$}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\BCE}{BCE}
+\DeclareMathOperator{\dil}{dilate}
+\DeclareMathOperator{\ero}{erode}

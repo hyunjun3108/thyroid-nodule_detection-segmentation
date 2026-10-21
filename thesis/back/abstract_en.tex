@@ -1,0 +1,50 @@
+% 영문 초록 (Abstract) — 국문 초록과 내용을 맞춰 둘 것
+\cleardoublepage
+\chapter*{Abstract}
+\phantomsection\addcontentsline{toc}{chapter}{Abstract}
+
+\begin{center}
+{\large\bfseries \ThesisTitleEn\par}
+{\normalsize --- \ThesisSubtitleEn\ ---\par}
+\vspace{2mm}
+{\normalsize \AuthorEn\par}
+{\normalsize \DepartmentEn, Graduate School, \UniversityEn\par}
+{\normalsize Supervised by \AdvisorEn\par}
+\end{center}
+\vspace{4mm}
+
+In ultrasound reporting of thyroid nodules, the nodule margin is an independent scoring item for
+malignancy risk. An automatic segmentation model therefore needs accurate boundaries rather than merely
+overlapping regions, and it must run without a GPU to be usable at screening sites or on portable
+scanners. This thesis builds on YOLOv11-seg and evaluates, in a single pipeline, training on mixed
+datasets, boundary refinement that adds no inference cost, and post-training quantization.
+
+We combined TN3K and DDTI (4,130 images, 4,457 nodules) and designed source-stratified 5-fold
+cross-validation, a held-out evaluation on 614 TN3K test images never used for training, and
+leave-one-dataset-out (LODO) experiments. Under these conditions YOLOv11n-seg matched the small model in
+mask mAP$_{50:95}$ (0.6272 vs.\ 0.6239) with 3.5 times fewer parameters, so the nano model was adopted
+as the baseline.
+
+We then propose SegmentBRM, a training-only boundary branch attached to the prototype features of the
+segmentation head, together with a boundary-aware loss that up-weights pixels in the morphological
+boundary band of the ground-truth mask. The branch adds 4,657 parameters (0.16\%) and is not executed at
+inference, so the deployed graph is identical to the baseline (9.73 GFLOPs). With loss coefficients chosen
+by a sweep, the held-out Dice improved from 0.8195 to 0.8300, the HD95 decreased from 9.628\% to 8.378\% of
+the image diagonal (13.0\%), and the Boundary IoU increased from 0.4358 to 0.4414. All three improvements
+were significant in an image-level paired test ($n=614$; Wilcoxon $p$ = 0.014, 0.0045 and 0.011).
+In the cross-dataset setting the improvement did not carry over; however, after repeating the experiment
+with three random seeds, no significant degradation was found either, so generalization could not be
+determined. A large drop that appeared with a single seed turned out to lie within run-to-run variation.
+
+Finally, we converted the model to ONNX FP32/FP16, ONNX Runtime static INT8 and OpenVINO INT8. The OpenVINO
+INT8 model was 3.71 MB and ran in 4.10 ms on a CPU, 15.3 times faster than ONNX FP32 (11.63 MB, 62.82 ms),
+while keeping a Dice of 0.8290 against 0.8300 for the original. ONNX Runtime INT8 reached only 44.00 ms
+because the detection head had to remain in floating point, showing that the benefit of quantization
+depends strongly on which operations the conversion tool keeps in full precision.
+
+\vspace{6mm}
+\noindent\textbf{Keywords}\quad thyroid nodule, ultrasound, instance segmentation, YOLOv11, boundary
+refinement, boundary-aware loss, model compression, post-training quantization, cross-dataset generalization
+
+\vspace{2mm}
+\noindent\textbf{Student Number}\quad \fillin{○○○○-○○○○○}

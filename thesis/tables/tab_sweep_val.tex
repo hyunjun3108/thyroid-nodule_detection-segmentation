@@ -1,0 +1,23 @@
+% 자동 생성 파일 — scripts/make_thesis.py 가 덮어쓴다. 직접 고치지 말 것.
+\begin{table}[htbp]
+\centering
+\small
+\caption[경계 손실 계수 탐색 결과 (fold 0·2 평균, 각 fold의 검증 분할(fold 0: 704장, fold 2: 703장)).]{경계 손실 계수 탐색 결과 (fold 0·2 평균, 각 fold의 검증 분할(fold 0: 704장, fold 2: 703장)). $g$는 보조 경계 손실 가중치(\texttt{head\_gain}), $\lambda$는 경계 밴드 강조 계수이며, 굵은 글씨가 채택한 구성이다. 계수 선택 이후에 같은 모델을 다시 평가한 사후 점검 결과이다.}
+\label{tab:sweep_val}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lcccccc}
+\toprule
+구분 & $g$ & $\lambda$ & Dice$\uparrow$ & HD95 (\%)$\downarrow$ & BIoU$\uparrow$ & Mask mAP$_{50:95}\uparrow$ \\
+\midrule
+베이스라인 & -- & -- & 0.7954 & 10.574 & 0.3714 & 0.5617 \\
+\midrule
+초기값 & 0.5 & 5 & 0.8085 & 8.707 (-17.7\%) & 0.3789 & 0.5660 \\
+\midrule
+스윕 & 0.25 & 2 & 0.8088 & 8.567 (-19.0\%) & 0.3786 & 0.5612 \\
+스윕 & 0.25 & 10 & 0.8052 & 9.068 (-14.2\%) & 0.3805 & 0.5649 \\
+\textbf{스윕} & \textbf{1} & \textbf{2} & \textbf{0.8041} & \textbf{9.066 (-14.3\%)} & \textbf{0.3798} & \textbf{0.5635} \\
+스윕 & 1 & 10 & 0.8057 & 9.137 (-13.6\%) & 0.3769 & 0.5599 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

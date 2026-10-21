@@ -1,0 +1,18 @@
+% 자동 생성 파일 — scripts/make_thesis.py 가 덮어쓴다. 직접 고치지 말 것.
+\begin{table}[htbp]
+\centering
+\small
+\caption[fold별 학습 epoch (총 학습 epoch / 체크포인트 epoch).]{fold별 학습 epoch (총 학습 epoch / 체크포인트 epoch). 최대 100 epoch, 검증 fitness가 20 epoch 동안 개선되지 않으면 조기 종료하였으므로, 총 epoch이 100보다 작은 경우 체크포인트 epoch보다 정확히 20 크다.}
+\label{tab:epochs}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lccccc}
+\toprule
+모델 & fold 0 & fold 1 & fold 2 & fold 3 & fold 4 \\
+\midrule
+베이스라인 nano & 93 / 73 & 91 / 71 & 89 / 69 & 100 / 86 & 98 / 78 \\
+small & 100 / 97 & 91 / 71 & 100 / 89 & 100 / 84 & 100 / 100 \\
+제안 (BRM nano) & 84 / 64 & 100 / 90 & 90 / 70 & 81 / 61 & 98 / 78 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

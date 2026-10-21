@@ -1,0 +1,4 @@
+# latexmk / Overleaf / 대부분의 온라인 LaTeX 편집기가 이 파일을 읽어 XeLaTeX로 컴파일한다.
+$pdf_mode = 5;          # 5 = xelatex
+$bibtex_use = 2;        # bibtex 실행 후 중간 파일 정리
+$xelatex = 'xelatex -interaction=nonstopmode -file-line-error -synctex=1 %O %S';

@@ -1,0 +1,72 @@
+% !TEX program = xelatex
+% !TEX encoding = UTF-8
+%
+% 석사학위논문 — 갑상선 결절 초음파 영상의 경량 검출·분할 모델
+% 컴파일: XeLaTeX (한글 때문에 pdfLaTeX 불가) → BibTeX → XeLaTeX ×2
+%         latexmk 사용 시 latexmkrc 가 자동으로 XeLaTeX 를 고른다.
+%
+% 표(tables/)와 그림(figures/)은 scripts/make_thesis.py 가 실험 결과에서 자동 생성한다.
+% 본문(front/, chapters/, back/)은 직접 고치는 파일이다.
+
+\documentclass[11pt,a4paper,oneside,openany]{report}
+
+% ── 논문 정보: 여기만 고치면 표지·인준지·초록에 모두 반영된다 ───────────────
+\newcommand{\ThesisTitleKo}{갑상선 결절 초음파 영상의 경량 검출·분할 모델}
+\newcommand{\ThesisSubtitleKo}{추론 비용 없는 경계 정교화 모듈과 INT8 양자화를 중심으로}
+\newcommand{\ThesisTitleEn}{A Lightweight Detection and Segmentation Model for Thyroid Nodules in Ultrasound Images}
+\newcommand{\ThesisSubtitleEn}{Zero-Inference-Cost Boundary Refinement and INT8 Quantization}
+\newcommand{\AuthorKo}{\fillin{홍길동}}
+\newcommand{\AuthorEn}{\fillin{Gil-Dong Hong}}
+\newcommand{\AdvisorKo}{\fillin{○○○}}
+\newcommand{\AdvisorEn}{\fillin{Prof. ○○○}}
+\newcommand{\UniversityKo}{\fillin{○○대학교}}
+\newcommand{\UniversityEn}{\fillin{○○ University}}
+\newcommand{\DepartmentKo}{\fillin{○○학과}}
+\newcommand{\DepartmentEn}{\fillin{Department of ○○}}
+\newcommand{\SubmitDate}{\fillin{2026년 12월}}
+\newcommand{\DegreeDate}{\fillin{2027년 2월}}
+\newcommand{\DegreeDateEn}{\fillin{February 2027}}
+
+\input{settings}
+
+\begin{document}
+
+% ── 앞부분 (로마 숫자 쪽번호) ─────────────────────────────────────────
+\pagenumbering{roman}
+\input{front/cover}
+\input{front/approval}
+\input{front/abstract_ko}
+
+\cleardoublepage
+\phantomsection\addcontentsline{toc}{chapter}{\contentsname}
+\tableofcontents
+\cleardoublepage
+\phantomsection\addcontentsline{toc}{chapter}{\listtablename}
+\listoftables
+\cleardoublepage
+\phantomsection\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+
+% ── 본문 (아라비아 숫자 쪽번호) ───────────────────────────────────────
+\cleardoublepage
+\pagenumbering{arabic}
+\input{chapters/ch1_introduction}
+\input{chapters/ch2_related_work}
+\input{chapters/ch3_dataset}
+\input{chapters/ch4_method}
+\input{chapters/ch5_experiments}
+\input{chapters/ch6_discussion}
+\input{chapters/ch7_conclusion}
+
+% ── 뒷부분 ───────────────────────────────────────────────────────────
+\cleardoublepage
+\phantomsection\addcontentsline{toc}{chapter}{\bibname}
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+
+\appendix
+\input{back/appendix}
+
+\input{back/abstract_en}
+
+\end{document}

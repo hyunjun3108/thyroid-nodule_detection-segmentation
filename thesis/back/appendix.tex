@@ -1,0 +1,86 @@
+% ============================================================================
+% 부록
+% ============================================================================
+
+\chapter{재현 절차}\label{app:repro}
+
+본 연구의 모든 코드와 수치 결과는 연구 저장소에 있다. 원본 데이터셋 영상과 모델 가중치는 용량과 재배포
+문제로 저장소에 포함하지 않았다. 아래 명령은 저장소 최상위에서 실행한다.
+
+\section{환경 구성}
+
+\begin{small}
+\begin{verbatim}
+# 1) ultralytics 기반 커밋에 본 연구의 변경분(패치)을 적용
+git clone https://github.com/ultralytics/ultralytics.git ultralytics_thyroid
+cd ultralytics_thyroid
+git checkout 4dcc98a6be09d058c206f2756f3ee2966d1c4b71
+git apply ../ultralytics_patches/thyroid.patch
+pip install -e . && cd ..
+# 2) 부가 의존성
+pip install onnx onnxruntime-gpu openvino nncf scipy
+\end{verbatim}
+\end{small}
+
+패치는 \BRM{} 헤드(\texttt{nn/modules/head.py}), 경계 인식 손실(\texttt{utils/loss.py}), 모델 구성 파일
+(\texttt{cfg/models/11/yolo11-seg-brm.yaml})과 이들의 등록 코드를 담고 있다. 경계 손실 계수는 환경 변수
+\texttt{BRM\_HEAD\_GAIN}($g$, 기본 1.0)과 \texttt{BRM\_LAMBDA}($\lambda$, 기본 2.0)로 바꿀 수 있다.
+
+\section{실행 순서}
+
+\begin{small}
+\begin{verbatim}
+python scripts/convert_to_yoloseg.py        # 마스크 -> YOLO-seg 다각형 (3.4절)
+python scripts/make_splits.py               # 5-fold / LODO / held-out 분할 (3.5절)
+bash   scripts/run_baseline_rest.sh         # 베이스라인 nano·small 학습 (5.4절)
+bash   scripts/run_phase3_sweep.sh          # 경계 손실 계수 스윕 (5.5절)
+python scripts/sweep_eval.py                # 스윕 결과표, held-out 기준 (5.5절)
+python scripts/sweep_eval.py --split val    # 같은 모델의 검증 분할 기준 사후 점검
+bash   scripts/run_phase3_final.sh          # 제안 모델 5-fold + LODO 학습 (5.6절)
+bash   scripts/run_lodo_seeds.sh            # LODO 시드 43·44 반복 (5.9절)
+python scripts/stats_test.py --part all     # 대응표본 검정 (5.8절, 5.9절)
+python scripts/export_quant.py --fold N     # 정밀도별 변환, N = 0..4 (4.6절)
+python scripts/eval_quant.py --folds 0,1,2,3,4   # 정밀도별 평가 (5.10절)
+python scripts/final_table.py               # 단계별 누적 결과 (5.11절)
+python scripts/make_thesis.py --zip         # 본 논문의 표·그림 재생성
+\end{verbatim}
+\end{small}
+
+학습 스크립트는 같은 이름의 출력 폴더를 덮어쓰며 이어 쓰도록 설정되어 있어, 같은 실행을 두 번 띄우면
+두 학습의 기록과 가중치가 섞인다. 실제로 이 문제로 제안 모델의 fold 0--2 결과가 오염된 적이 있어, 해당 fold를
+처음부터 다시 학습하였고 재실행 스크립트에 기존 폴더가 있으면 실행을 거부하는 장치를 넣었다
+(\appref{app:impl}). 평가는 반드시 학습 드라이버의 종료 기록을 확인한 뒤 수행해야 한다.
+
+\chapter{상세 결과}\label{app:detail}
+
+\section{fold별 결과}
+\input{tables/tab_perfold}
+\input{tables/tab_epochs}
+
+\section{교차 데이터셋 시드별 결과}
+\input{tables/tab_lodo_seed}
+
+\chapter{구현 세부와 시행착오}\label{app:impl}
+
+본 절은 같은 실험을 재현하거나 확장하려는 연구자를 위해, 구현 과정에서 실제로 겪은 문제와 해결 방법을
+기록한다. 대부분 오류 메시지 없이 조용히 실패하는 문제였다는 점에서 기록할 가치가 있다고 판단하였다.
+
+\begin{enumerate}
+  \item \textbf{검출 헤드 양자화 시 출력 붕괴.} ONNX Runtime 정적 양자화를 그래프 전체에 적용하면 오류 없이
+    변환되지만 모든 클래스 점수가 0이 된다. 헤드(\texttt{/model.23/} 이하 119개 노드)를 양자화 대상에서
+    제외하여 해결하였다(\secref{sec:quant}).
+  \item \textbf{채널별 양자화의 opset 요구.} 채널별 QDQ 양자화는 opset 12 그래프에서 유효하지 않은 그래프를
+    만들어 로드되지 않는다. opset 13으로 변환하여 해결하였다.
+  \item \textbf{OpenVINO 백엔드의 CUDA 비활성화.} 한 프로세스에서 OpenVINO 모델을 불러오면 그 뒤로 같은
+    프로세스의 CUDA가 비활성화되어 GPU 평가가 모두 실패한다. 정밀도 단위로 평가 순서를 바꾸고 OpenVINO를
+    마지막에 두어 회피하였다.
+  \item \textbf{의존성 자동 설치에 의한 프로세스 종료.} 설치된 패키지가 \texttt{onnxruntime-gpu}여서 Ultralytics가
+    ONNX Runtime이 없다고 판단하고 실행 중에 자동 설치를 시도하다 프로세스가 종료되었다. 환경 변수
+    \texttt{YOLO\_AUTOINSTALL=false}로 자동 설치를 끄고 해결하였다.
+  \item \textbf{ONNX 모델의 과제 추론.} \texttt{.onnx} 파일을 불러올 때 과제 종류가 검출로 잘못 추론되어
+    마스크가 생성되지 않았다(경계 지표가 모두 0). 과제를 분할로 명시하여 해결하였다.
+  \item \textbf{OpenVINO 모델 폴더 이름.} Ultralytics는 폴더 이름이 \texttt{\_openvino\_model}로 끝나야
+    OpenVINO 모델로 인식한다.
+  \item \textbf{학습 중복 실행에 의한 결과 오염.} 앞의 \appref{app:repro}에서 설명한 문제이다. 오염된 실행은
+    학습 곡선의 epoch 수가 최대치(100)를 넘는 것으로 식별하였다.
+\end{enumerate}

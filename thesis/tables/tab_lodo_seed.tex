@@ -1,0 +1,22 @@
+% 자동 생성 파일 — scripts/make_thesis.py 가 덮어쓴다. 직접 고치지 말 것.
+\begin{table}[htbp]
+\centering
+\footnotesize
+\caption[LODO 시드별 상세 결과 (베이스라인 / 제안).]{LODO 시드별 상세 결과 (베이스라인 / 제안). 체크포인트 epoch은 검증 fitness가 최대인 epoch, 총 epoch은 조기 종료까지 학습한 epoch 수이다.}
+\label{tab:lodo_seed}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{llccccc}
+\toprule
+방향 & 시드 & Mask mAP$_{50:95}$ & Dice & HD95 (\%) & 체크포인트 epoch & 총 epoch \\
+\midrule
+\multirow{3}{*}{TN3K$\rightarrow$DDTI} & 42 & 0.4501 / 0.4378 & 0.6954 / 0.5771 & 17.89 / 34.15 & 39 / 25 & 59 / 45 \\
+ & 43 & 0.4580 / 0.4304 & 0.6809 / 0.6771 & 20.13 / 19.53 & 36 / 22 & 56 / 42 \\
+ & 44 & 0.4315 / 0.4413 & 0.6331 / 0.6525 & 26.10 / 23.76 & 21 / 34 & 41 / 54 \\
+\midrule
+\multirow{3}{*}{DDTI$\rightarrow$TN3K} & 42 & 0.3070 / 0.2990 & 0.6152 / 0.5782 & 22.55 / 24.77 & 46 / 39 & 66 / 59 \\
+ & 43 & 0.3384 / 0.2991 & 0.6498 / 0.5997 & 18.64 / 21.27 & 71 / 46 & 91 / 66 \\
+ & 44 & 0.2985 / 0.3064 & 0.5578 / 0.6059 & 28.33 / 23.46 & 46 / 48 & 66 / 68 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

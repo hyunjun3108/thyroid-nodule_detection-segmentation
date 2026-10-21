@@ -1,0 +1,24 @@
+% 자동 생성 파일 — scripts/make_thesis.py 가 덮어쓴다. 직접 고치지 말 것.
+\begin{table}[htbp]
+\centering
+\small
+\caption[교차 데이터셋(LODO) 결과 — 3개 시드(42, 43, 44) 평균 $\pm$ 표준편차.]{교차 데이터셋(LODO) 결과 — 3개 시드(42, 43, 44) 평균 $\pm$ 표준편차. Mask mAP는 저장된 체크포인트(검증 fitness 최대 epoch)의 값이며, 경계 지표는 타깃 도메인 전체 영상에 대한 평균이다. $p$는 시드 단위 대응 $t$ 검정(n=3)이다.}
+\label{tab:lodo}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{llcccc}
+\toprule
+방향 & 지표 & 베이스라인 & 제안 (BRM) & $\Delta$ & 시드 단위 $p$ \\
+\midrule
+\multirow{4}{*}{TN3K$\rightarrow$DDTI} & Mask mAP$_{50:95}$ & 0.4465 $\pm$ 0.0136 & 0.4365 $\pm$ 0.0056 & -0.0100 & 0.454 (n.s.) \\
+ & Dice & 0.6698 $\pm$ 0.0326 & 0.6356 $\pm$ 0.0521 & -0.0342 & 0.506 (n.s.) \\
+ & HD95 (\%) & 21.372 $\pm$ 4.245 & 25.810 $\pm$ 7.522 & +4.438 & 0.532 (n.s.) \\
+ & Boundary IoU & 0.2722 $\pm$ 0.0022 & 0.2549 $\pm$ 0.0105 & -0.0173 & 0.073 (n.s.) \\
+\midrule
+\multirow{4}{*}{DDTI$\rightarrow$TN3K} & Mask mAP$_{50:95}$ & 0.3146 $\pm$ 0.0210 & 0.3015 $\pm$ 0.0042 & -0.0131 & 0.444 (n.s.) \\
+ & Dice & 0.6076 $\pm$ 0.0465 & 0.5946 $\pm$ 0.0145 & -0.0130 & 0.714 (n.s.) \\
+ & HD95 (\%) & 23.173 $\pm$ 4.875 & 23.169 $\pm$ 1.769 & -0.004 & 0.999 (n.s.) \\
+ & Boundary IoU & 0.2285 $\pm$ 0.0231 & 0.2189 $\pm$ 0.0166 & -0.0096 & 0.693 (n.s.) \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
