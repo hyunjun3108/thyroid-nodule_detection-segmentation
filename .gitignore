@@ -1,0 +1,49 @@
+# ── 대용량·재생성 가능·제3자 데이터는 올리지 않는다 ─────────────────────
+
+# 원본/변환 데이터셋 (TN3K·DDTI — 제3자 공개 데이터, 재배포하지 않음)
+datasets_raw/
+datasets/*/images/
+datasets/*/labels/
+datasets/_preview/
+# 단, 분할 목록(어떤 이미지가 어느 fold인지)은 재현성을 위해 올린다
+!datasets/splits/
+
+# 커스텀 ultralytics 포크 — 전체(127MB) 대신 ultralytics_patches/thyroid.patch 로 보관
+ultralytics_thyroid/
+
+# 모델 가중치·export 산출물
+*.pt
+*.pth
+*.onnx
+*.bin
+*.cache
+*_openvino_model/
+_phase0_check/
+
+# 학습 산출물: 수치 결과(csv/json/yaml)와 논문 그림만 남기고 나머지는 제외
+runs/**/weights/
+runs/**/*.jpg
+runs/**/*.png
+!runs/figures/*.png
+runs/**/logs/
+runs/**/*.log
+runs/stats/per_image_cache.json
+
+# 파이썬·OS·에디터
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+.vscode/
+
+# 자동 동기화 로그
+.git_auto_sync.log
+
+# 학위논문 빌드 산출물 (원고 소스는 올리고, 컴파일 결과·압축본은 다시 만들 수 있으므로 제외)
+thesis/*.log
+thesis/*.aux
+thesis/*.bbl
+thesis/*.blg
+thesis/*.synctex.gz
+thesis/main.pdf
+thesis_source.zip
